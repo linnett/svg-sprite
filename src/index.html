@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>External Sprite Example</title>
+    <style>
+
+      svg {
+        width: 100px;
+        height: 100px;
+        display: block;
+        float: left;
+      }
+      .icon-1 {
+        fill: blue;
+      }
+      .icon-2 {
+        fill: black;
+      }
+      .icon-3 {
+        fill: yellow;
+      }
+      .icon-4 {
+        fill: red;
+      }
+      .icon-5 {
+        fill: green;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <svg viewBox="0 0 100 100" class="icon-1">
+      <use xlink:href="images/icons.svg#icon-service_handsets"></use>
+    </svg>
+
+    <svg viewBox="0 0 100 100" class="icon-2">
+      <use xlink:href="images/icons.svg#icon-service_moneytransfer"></use>
+    </svg>
+
+    <svg viewBox="0 0 100 100" class="icon-3">
+      <use xlink:href="images/icons.svg#icon-service_prepaidcard"></use>
+    </svg>
+
+    <svg viewBox="0 0 100 100" class="icon-4">
+      <use xlink:href="images/icons.svg#icon-service_sim"></use>
+    </svg>
+
+    <svg viewBox="0 0 100 100" class="icon-5">
+      <use xlink:href="images/icons.svg#icon-service_topup"></use>
+    </svg>
+
+    <!-- IE fallback -->
+    <script src="js/svg4everybody.js"></script>
+  </body>
+</html>
