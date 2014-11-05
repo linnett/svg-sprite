@@ -5,16 +5,22 @@ To install Gulp globally:
 $ npm install gulp -g
 
 Install node modules:
-$ npm install gulp-svgstore gulp-svgmin gulp-inject del
+$ npm install gulp gulp-svgstore gulp-svgmin gulp-inject del gulp-svg2png gulp-rename --save-dev
 
 ***********************/
 
 // Load plugins
-var gulp = require('gulp'),
-    svgstore = require('gulp-svgstore'),
-    svgmin = require('gulp-svgmin'),
-    del = require('del'),
-    inject = require('gulp-inject');
+var gulp      = require('gulp'),
+    svgstore  = require('gulp-svgstore'),
+    svgmin    = require('gulp-svgmin'),
+    del       = require('del'),
+    inject    = require('gulp-inject'),
+    svg2png   = require('gulp-svg2png'),
+    rename    = require('gulp-rename');
+
+// Set Variables
+ var iconPrefix   = 'icon-',
+     iconFilename = 'icons.svg';
 
 // Create SVG sprite
 gulp.task('svgs', function () {
@@ -27,42 +33,25 @@ gulp.task('svgs', function () {
     return gulp
         .src('src/icons/*.svg')
         .pipe(svgmin())
-        .pipe(svgstore({ fileName: 'icons.svg', prefix: 'icon-', transformSvg: transformSvg }))
+        .pipe(svgstore({ fileName: iconFilename, prefix: iconPrefix, transformSvg: transformSvg }))
         .pipe(gulp.dest('dest/images'))
 });
 
-// Demonstrate how inline-svg's work
-gulp.task('inline-svg', function () {
-    var svgs
-
-    function transformSvg ($svg, done) {
-        $svg.attr('style', 'display:none')
-        // Remove all fill="none" attributes
-        $svg.find('[fill="none"]').removeAttr('fill')
-        done(null, $svg)
-    }
-
-    function fileContents (filePath, file) {
-        return file.contents.toString('utf8')
-    }
-
-    svgs = gulp.src('src/icons/*.svg')
-             .pipe(svgstore({ prefix: 'icon-'
-                            , inlineSvg: true
-                            , transformSvg: transformSvg
-                            }))
-
+// Create PNGs 
+gulp.task('pngs', function () {
     return gulp
-        .src('src/inline-svg.html')
-        .pipe(inject(svgs, { transform: fileContents }))
-        .pipe(gulp.dest('dest'))
-
+        .src('src/icons/*.svg')
+        .pipe(svg2png())
+        .pipe(rename({
+            prefix: iconFilename + "." + iconPrefix
+        }))
+        .pipe(gulp.dest('dest/images'))
 });
 
 // Demo HTML for SVG Sprite
-gulp.task('svg-sprite-demo', function () {
+gulp.task('html', function () {
     return gulp
-        .src('src/index.html')
+        .src('src/**/*.html')
         .pipe(gulp.dest('dest'))
 });
 
@@ -80,5 +69,5 @@ gulp.task('clean', function(cb) {
 
 // Default task
 gulp.task('default', ['clean'], function() {
-    gulp.start('svgs', 'inline-svg', 'svg-sprite-demo', 'js');
+    gulp.start('svgs', 'pngs', 'html', 'js');
 });

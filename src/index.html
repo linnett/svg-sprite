@@ -2,10 +2,21 @@
 <html>
   <head>
     <meta charset="UTF-8">
+
+    <!-- Required for IE fallback -->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
     <title>External Sprite Example</title>
+
+    <!-- IE8<= fallback -->
+    <!--[If lte IE 8]>
+    <script src="js/svg4everybody.ie8.js"></script>
+    <![endif]--> 
+
     <style>
 
-      svg {
+      svg,
+      img {
         width: 100px;
         height: 100px;
         display: block;
@@ -13,6 +24,7 @@
       }
       .icon-1 {
         fill: blue;
+        color: blue;
       }
       .icon-2 {
         fill: black;
@@ -26,32 +38,37 @@
       .icon-5 {
         fill: green;
       }
+      .lol {
+        fill: #ccc;
+      }
 
     </style>
   </head>
   <body>
 
-    <svg viewBox="0 0 100 100" class="icon-1">
+    <svg role="img" viewBox="0 0 100 100" class="icon-1">
       <use xlink:href="images/icons.svg#icon-service_handsets"></use>
     </svg>
 
-    <svg viewBox="0 0 100 100" class="icon-2">
+    <svg role="img" viewBox="0 0 100 100" class="icon-2">
       <use xlink:href="images/icons.svg#icon-service_moneytransfer"></use>
     </svg>
 
-    <svg viewBox="0 0 100 100" class="icon-3">
+    <svg role="img" viewBox="0 0 100 100" class="icon-3">
       <use xlink:href="images/icons.svg#icon-service_prepaidcard"></use>
     </svg>
 
-    <svg viewBox="0 0 100 100" class="icon-4">
+    <svg role="img" viewBox="0 0 100 100" class="icon-4">
       <use xlink:href="images/icons.svg#icon-service_sim"></use>
     </svg>
 
-    <svg viewBox="0 0 100 100" class="icon-5">
+    <svg role="img" viewBox="0 0 100 100" class="icon-5">
       <use xlink:href="images/icons.svg#icon-service_topup"></use>
     </svg>
 
-    <!-- IE fallback -->
+    <!-- IE9>= fallback -->
+    <!--[If gte IE 9]>
     <script src="js/svg4everybody.js"></script>
+    <![endif]-->
   </body>
 </html>

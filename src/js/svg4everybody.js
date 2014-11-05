@@ -1,45 +1,84 @@
-(function (document, navigator, CACHE, IE9TO11) {
-	if (IE9TO11) document.addEventListener('DOMContentLoaded', function () {
-		[].forEach.call(document.querySelectorAll('use'), function (use) {
+/*! svg4everybody v1.0.0 | github.com/jonathantneal/svg4everybody */
+(function (document, uses, requestAnimationFrame, CACHE, IE9TO11) {
+	function embed(svg, g) {
+		if (g) {
+			var
+			viewBox = g.getAttribute('viewBox'),
+			fragment = document.createDocumentFragment(),
+			clone = g.cloneNode(true);
+
+			if (viewBox) {
+				svg.setAttribute('viewBox', viewBox);
+			}
+
+			while (clone.childNodes.length) {
+				fragment.appendChild(clone.childNodes[0]);
+			}
+
+			svg.appendChild(fragment);
+		}
+	}
+
+	function onload() {
+		var xhr = this, x = document.createElement('x'), s = xhr.s;
+
+		x.innerHTML = xhr.responseText;
+
+		xhr.onload = function () {
+			s.splice(0).map(function (array) {
+				embed(array[0], x.querySelector('#' + array[1].replace(/(\W)/g, '\\$1')));
+			});
+		};
+
+		xhr.onload();
+	}
+
+	function onframe() {
+		var use;
+
+		while ((use = uses[0])) {
 			var
 			svg = use.parentNode,
 			url = use.getAttribute('xlink:href').split('#'),
 			url_root = url[0],
-			url_hash = url[1],
-			xhr = CACHE[url_root] = CACHE[url_root] || new XMLHttpRequest();
+			url_hash = url[1];
 
-			if (!xhr.s) {
-				xhr.s = [];
+			svg.removeChild(use);
 
-				xhr.open('GET', url_root);
+			if (url_root.length) {
+				var xhr = CACHE[url_root] = CACHE[url_root] || new XMLHttpRequest();
 
-				xhr.onload = function () {
-					var x = document.createElement('x'), s = xhr.s;
+				if (!xhr.s) {
+					xhr.s = [];
 
-					x.innerHTML = xhr.responseText;
+					xhr.open('GET', url_root);
 
-					xhr.onload = function () {
-						s.splice(0).map(function (array) {
-							var g = x.querySelector('#' + array[2]);
+					xhr.onload = onload;
 
-							if (g) array[0].replaceChild(g.cloneNode(true), array[1]);
-						});
-					};
+					xhr.send();
+				}
 
+				xhr.s.push([svg, url_hash]);
+
+				if (xhr.readyState === 4) {
 					xhr.onload();
-				};
+				}
 
-				xhr.send();
+			} else {
+				embed(svg, document.getElementById(url_hash));
 			}
+		}
 
-			xhr.s.push([svg, use, url_hash]);
+		requestAnimationFrame(onframe);
+	}
 
-			if (xhr.responseText) xhr.onload();
-		});
-	});
+	if (IE9TO11) {
+		onframe();
+	}
 })(
 	document,
-	navigator,
+	document.getElementsByTagName('use'),
+	window.requestAnimationFrame || window.setTimeout,
 	{},
-	/Trident\/[567]\b/.test(navigator.userAgent)
+	/Trident\/[567]\b/.test(navigator.userAgent) || (navigator.userAgent.match(/AppleWebKit\/(\d+)/) || [])[1] < 537
 );
